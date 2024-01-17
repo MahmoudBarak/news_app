@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/Model/articles_model.dart';
@@ -5,6 +7,7 @@ import 'package:news_app/Screens/categories/business.dart';
 import 'package:news_app/Screens/categories/science.dart';
 import 'package:news_app/Screens/categories/sports.dart';
 import 'package:news_app/Screens/categories/technology.dart';
+import 'package:news_app/Screens/web_view_screen.dart';
 import 'package:news_app/bloc/toHeadLines_bloc/tob_head_lines_bloc.dart';
 
 class HomePage extends StatefulWidget {
@@ -121,63 +124,74 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-Widget body() {
-  return BlocBuilder<TobHeadLinesBloc, TobHeadLinesState>(
-    builder: (context, state) {
-      if (state is GetHeadLinesLoadingState) {
-        return const CircularProgressIndicator();
-      } else if (state is GetHeadLinesSuccessState) {
-        return ListView.separated(
-          physics: const BouncingScrollPhysics(),
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            final article= state.article.articles[index];
-            return report(article);
-          },
-          itemCount: state.article.articles.length,
-          separatorBuilder: (context, index) => const Divider(),
-        );
-      } else if (state is GetHeadLinesFailureState) {
-        return Text(state.error);
-      }
-      return const SizedBox();
-    },
-  );
-}
 
-Widget report(Article article) {
-  return Row(
-    children: [
-      SizedBox(
-        height: 100,
-        width: 100,
-        child: Image.network(
-          '${article.urlToImage  } ' , ),
-      ),
-      Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              article.title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget body() {
+    return BlocBuilder<TobHeadLinesBloc, TobHeadLinesState>(
+      builder: (context, state) {
+        if (state is GetHeadLinesLoadingState) {
+          return const CircularProgressIndicator();
+        } else if (state is GetHeadLinesSuccessState) {
+          return ListView.separated(
+            physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final article= state.article.articles[index];
+              return report(article);
+            },
+            itemCount: state.article.articles.length,
+            separatorBuilder: (context, index) => const Divider(),
+          );
+        } else if (state is GetHeadLinesFailureState) {
+          return Text(state.error);
+        }
+        return const SizedBox();
+      },
+    );
+  }
+
+  Widget report(Article article) {
+    return InkWell(
+      onTap: (){
+
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => WebViewScreen(url: article.url!)));
+
+      },
+      child: Row(
+        children: [
+          SizedBox(
+            height: 100,
+            width: 100,
+            child: Image.network(
+              '${article.urlToImage  } ' , ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(article.publishedAt.toIso8601String()),
+                Text(
+                  article.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(article.publishedAt.toIso8601String()),
 
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-      )
-    ],
-  );
+          )
+        ],
+      ),
+    );
+  }
+
+
 }
 

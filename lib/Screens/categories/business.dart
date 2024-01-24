@@ -68,11 +68,12 @@ class _BusinessPageState extends State<BusinessPage> {
       },
       child: Row(
         children: [
+
           SizedBox(
             height: 100,
             width: 100,
-            child: Image.network(
-                '${article.urlToImage}'),
+            child:article.urlToImage != null? Image.network(
+                '${article.urlToImage}'): const  Icon(Icons.image)  ,
           ),
           Expanded(
             child: Column(

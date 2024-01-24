@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
                 TechnologyBloc()..add(GetTechnologyArticlesEvent())),
       ],
       child: const MaterialApp(
+
         debugShowCheckedModeBanner: false,
         home: HomePage(),
       ),
